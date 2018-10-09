@@ -1,0 +1,138 @@
+{% extends 'universe_layout.html.twig' %}
+
+{% block stylesheets %}{{  parent() }}{% endblock %}
+{% block contents %}
+    {% for local in locals %}
+        <a href="{{ url('local_view',{universe:id_universe,id: local.id}) }}" >
+        {#{{ local.idMap}}#}
+            <div id = "local_{{ loop.index0 }}" class="local_item">
+                <div id="local_map_{{ loop.index0 }}" class="local_item_img" style="background-image: url({{ asset('uploads/images/' ~ local.imageUrl) }})">
+                    <div class="icon_sub_menu" onclick="openPopup({{ loop.index0 }},this); return false;" style="background-image: url( {{ asset('image/icon/icon_submenu.png') }});"></div>
+                </div>
+                {#                <img class="item_sub_menu" src="{{ asset('image/icon/icon_submenu.png') }}"/>
+                            </img>#}
+                <span class="local_name bold size18">{{ local.mapName }}</span>
+            </div>
+        </a>
+
+    {% endfor %}
+    <div id="subMenu" class="subMenuPopup">
+        <div>
+            <div onClick="closeLayer(this)" style="cursor:pointer;" title="닫기">
+                <img class="close_img" src="{{ asset("image/icon/icon_close_1") }}" align="right"><br/>
+            </div>
+        </div>
+        <table >
+            <tr>
+                <td onclick="">
+                    <span > 링크 복사 </span>
+                </td>
+            </tr>
+            <tr>
+                <td onclick="">
+                    <span > 이름 변경 </span>
+                </td>
+            </tr>
+            <tr>
+                <td onclick="">
+                    <span > 지역 삭제 </span>
+                </td>
+            </tr>
+        </table>
+        <!--  여긴 레이어~</br>       클릭하면 바로 나타나는 레이어에요^^-->
+    </div>
+{% endblock %}
+{% block javascripts %}{{  parent() }}
+
+<script type="text/javascript">
+
+    var localInfo = [];
+    var getBackgroundImageSize = function(el) {
+        var imageUrl = $(el).css('background-image').match(/^url\(["']?(.+?)["']?\)$/);
+        var dfd = new $.Deferred();
+
+        if (imageUrl) {
+            var image = new Image();
+            image.onload = dfd.resolve;
+            image.onerror = dfd.reject;
+            image.src = imageUrl[1];
+        } else {
+            dfd.reject();
+        }
+
+        return dfd.then(function () {
+            //                return { width: this.width, height: this.height };
+            return {width: this.naturalWidth, height: this.naturalHeight};
+        });
+    };
+
+    {% for local in locals %}
+    getBackgroundImageSize($('#local_map_{{ loop.index0  }}'))
+            .then(function(size) {
+                if(size.width > 200 )
+                {
+                    $('#local_map_{{ loop.index0  }}').width(200+"px");
+                    $('#local_map_{{ loop.index0  }}').height((size.height/size.width)*200+"px");
+
+                    $('#local_map_{{ loop.index0  }}').css("background-size",200+"px "+((size.height/size.width)*200)+"px");
+                }else
+                {
+                    $('#local_map_{{ loop.index0  }}').width( size.width);
+                    $('#local_map_{{ loop.index0  }}').height(size.height);
+                }
+            })
+            .fail(function() {
+                console.log('Could not get size because could not load image');
+            });
+    localInfo[{{loop.index0 }}] = {"localName":"{{ local.mapName}}","url":"{{ local.imageUrl}}" };
+
+    {% endfor %}
+
+    function openPopup($local_number, $obj)
+    {
+        event.stopPropagation();
+//        localInfo[$local_number]
+        $('#subMenu').css({
+            "top": $obj.offsetTop +10+"px",
+            "left": $obj.offsetLeft -60+"px",
+            "position": "absolute"
+        }).show();
+    }
+
+    function closeLayer( obj ) {
+        $(obj).parent().parent().hide();
+    }
+
+//    function viewDetail( obj )
+//    {
+//        $(obj)
+//        var data = {
+//            "title" : $("#local_title").val(),
+//            "info" : $("#local_info").val(),
+//            "positionX" : selectIconLeft+46,
+//            "positionY": selectIconTop+23 - $("#nav-box").height() - $("#header").height()
+//        }
+//
+//        // 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+//        if( divLeft + oWidth > sWidth +  $(window).scrollLeft()) divLeft -= oWidth;
+//        if( divTop + oHeight > sHeight +  $(window).scrollTop() ) divTop -= (oHeight);
+//
+//        // 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+//        if( divLeft < 0 ) divLeft = 0;
+//        if( divTop < 0 ) divTop = 0;
+//        $('#infoLayer').hide();
+//        $('#inputLayer').css({
+//            "top": divTop,
+//            "left": divLeft,
+//            "position": "absolute"
+//        }).show();
+//
+//        $('.icon_select').css({
+//            "top": selectIconTop,
+//            "left": selectIconLeft,
+//            "position": "absolute"
+//        }).show();
+//    });
+</script>
+
+{% endblock %}

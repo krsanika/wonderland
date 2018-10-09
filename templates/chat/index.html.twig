@@ -1,0 +1,95 @@
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/chat.css') }}">
+
+{%  endblock %}
+{% block body %}
+    <div id="canvasWrapper" class="floatLeft" alt="map Area">
+
+        <div id="loading" onclick="Design.removeloading()">
+            광고삽입등등등<br>
+            공사중이양<br>
+            암것도없엉<br>
+        </div>
+        <div id="sceneLayer">
+            <div id="bg"></div>
+            <div id="stand1" class="standCg"></div>
+            <div id="stand2" class="standCg"></div>
+        </div>
+        <canvas id="mapLayer"></canvas>
+        <div id="chattingBar">
+            <div id="message"></div>
+            <div id="chatfooter">
+                <div id="wodBox" class="dicebox">
+                </div>
+                <div id="d20Box" class="dicebox">
+                </div>
+                <div id="cocBox" class="dicebox">
+                    <button onclick="Dice.setDice(2)">d2</button>
+                    <button onclick="Dice.setDice(3)">d3</button>
+                    <button onclick="Dice.setDice(4)">d4</button>
+                    <button onclick="Dice.setDice(6)">d6</button>
+                    <button onclick="Dice.setDice(10)">d10</button>
+                    <button onclick="Dice.setDice(100)">d%</button>
+                    수정치 : <input type="number" id="modifier" class="modifier" value=0>
+                    최종값 <span id="finalDice">0d0+0</span>
+                    <button onclick="Dice.GoRoll()">굴려랑</button>
+                </div>
+                <textarea id="message-input" class="form-control floatLeft" cols="76" rows="3"></textarea>
+            </div>
+            <div id="tools">
+                <div id="standSelector" class="gmTool window">
+
+                </div>
+                <div id="bgSelector" class="gmTool window">
+                    {% for bg in teamdata.default_bg_list %}
+                        <div id="bgItem{{ loop.index }}" class="item floatLeft" style="background-image: url({{asset(bg.filename) }} )" onclick="Scene.seBg('{{ bg.name}}')">
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div id="bgToolWindow">
+        </div>
+        <div id="standToolWindow">
+        </div>
+
+
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        var userdata = {{ userdata |json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
+
+        var bg_url = {
+        {% for bg in teamdata.default_bg_list %}
+            "{{bg.name}}" : "{{ asset('image/default/bg'~bg.filename) }}",
+        {% endfor %}
+        };
+        var stand_url = {
+        {% for stand in teamdata.default_stand_list %}
+            "{{stand.name}}" : "{{ asset('image/default/stand'~stand.filename) }}",
+        {% endfor %}
+        };
+    </script>
+    <script type="text/javascript" src="{{ asset('js/chat.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/dice.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/design.js') }}"></script>
+
+
+{% endblock %}

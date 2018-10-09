@@ -1,0 +1,101 @@
+.item_universe_home
+{
+    width: 100%;
+    display: block;
+}
+
+.item_universe_title_text
+{
+
+}
+
+.icon_sub_menu{
+    float:right;
+    width: 39px;
+    height: 12px;
+    background-repeat: no-repeat;
+    margin: 3px;
+    -webkit-filter: drop-shadow(5px 5px 5px #222);
+    filter: drop-shadow(5px 5px 5px #222);
+}
+.local_item
+{
+    padding : 5px;
+    padding-top: 10px;
+    width: 220px;
+    height: auto;
+    float : left;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 5px;
+}
+.subMenuPopup{
+    position: absolute;
+    display: none;
+    background-color: #ffffff;
+    border: solid 2px #d0d0d0;
+    width: 80px;
+    height: 100px;
+    padding: 10px;
+    z-index: 20;
+}
+.close_img{
+    width: 16px;
+    height: auto;
+}
+.local_item_img
+{
+    margin: auto;
+}
+#viewMap
+{
+    /*min-height: 500px;*/
+    background-size: contain ;
+    background-repeat: no-repeat ;
+    margin-left: 50%;
+    position: relative;
+}
+
+
+.popupLayer {
+    position: absolute;
+    display: none;
+    background-color: #ffffff;
+    border: solid 2px #d0d0d0;
+    width: 350px;
+    height: 150px;
+    padding: 10px;
+    z-index: 20;
+}
+.popupLayer div {
+    position: absolute;
+    top: 5px;
+    right: 5px
+}
+
+.icon_map{
+    border:1px solid;
+    width: 10px;
+    height: 10px;
+    background-color: #d7d849;
+    z-index: 11;
+}
+
+#icon_map_group{
+    position: relative;
+}
+
+.local_icon
+{
+    position: absolute;
+    width: auto;
+    align-content: center;
+}
+.map_icon_title{
+    width: auto;
+    margin-left: -100%;
+    margin-top: 8px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0px 0 white, 0 1px white, 1px 0 white, 0 0px white;
+}

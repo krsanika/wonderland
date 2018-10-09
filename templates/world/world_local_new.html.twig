@@ -1,0 +1,9 @@
+{% extends 'world_layout.html.twig' %}
+
+{% block stylesheets %}{{  parent() }}{% endblock %}
+{% block contents %}
+    {{ form_start(form) }}
+    {{ form_row(form.image_url) }}
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascripts %}{{  parent() }}{% endblock %}

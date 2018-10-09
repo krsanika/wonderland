@@ -1,0 +1,16 @@
+{% extends 'default_layout.html.twig' %}
+
+{% block title %}WorldBox{% endblock %}
+
+{% block stylesheets %}{{  parent() }}
+    <link href="{{ asset('css/universe.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block contents %}
+{% endblock %}
+{% block nav %}
+    {{  parent() }}
+    <div id="subNav" class="nav">
+        {% include 'universe/universe_menu.html.twig' %}
+    </div>
+{% endblock %}
+{% block javascripts %}{{  parent() }}{% endblock %}

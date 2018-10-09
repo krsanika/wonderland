@@ -1,0 +1,114 @@
+{% extends 'world_layout.html.twig' %}
+
+{% block stylesheets %}{{  parent() }}
+
+    <link href="{{ asset('css/worldmap.css') }}" rel="stylesheet" />
+{% endblock %}
+        {% block contents %}
+            {% if is_new %}
+                새로운 지도를 등록하세요!<br>
+                <form>
+                    <input id="mapLink" type="url" name="map_link" >
+                    <input type="submit" alt="불러오기">
+                </form>
+            {% else %}
+                <div id="editMap" class="map" style="background-image:url('{{ image_map }}'); ">
+                    <div id="icon_map_group">
+
+                        {%  for marker in markers %}
+                            <div id="local_{{loop.index0  }}" class="local_icon">
+                                <div id="icon_{{ loop.index0 }}" class="icon_map" onClick="viewInfo()" ></div>
+                                <div class="map_icon_title size18">{{ marker.title }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="icon_select" style="background-image: url({{ asset('image/icon_select_circle.png') }})"> </div>
+                </div>
+                <!-- //클릭 이미지 -->
+
+                <a href={{ url('map_edit')}}>지도 편집하러 가기</a>
+                <!-- 폼 레이어  -->
+                <div id="infoLayer" class="popupLayer">
+                    <div>
+                        <span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+                    </div>
+                    <span> 지역명 : <span id="title_text" ></span></span><br/>
+                    <span> 설명 : <span id="info_text" ></span></span><br/>
+                    <!--  여긴 레이어~</br>       클릭하면 바로 나타나는 레이어에요^^-->
+                </div>
+            {% endif %}
+        {% endblock %}
+{% block javascripts %}
+    {{  parent() }}
+
+<script type="text/javascript">
+    var getBackgroundImageSize = function(el) {
+        var imageUrl = $(el).css('background-image').match(/^url\(["']?(.+?)["']?\)$/);
+        var dfd = new $.Deferred();
+
+        if (imageUrl) {
+            var image = new Image();
+            image.onload = dfd.resolve;
+            image.onerror = dfd.reject;
+            image.src = imageUrl[1];
+        } else {
+            dfd.reject();
+        }
+
+        return dfd.then(function () {
+            //                return { width: this.width, height: this.height };
+            return {width: this.naturalWidth, height: this.naturalHeight};
+        });
+    };
+
+    getBackgroundImageSize(jQuery('#editMap'))
+            .then(function(size) {
+                $("#editMap").width( size.width);
+                $("#editMap").height(size.height);
+//                    mapMarginTop = $("#content").height()- $("#nav-box").height();
+            })
+            .fail(function() {
+                console.log('Could not get size because could not load image');
+            });
+
+    var markersInfo = [];
+    {% for marker in markers %}
+        markersInfo[{{loop.index0 }}] = {"title":"{{ marker.title}}","explain":"{{ marker.explain}}","positionX":"{{ marker.positionX}}","positionY":"{{ marker.positionY }}" };
+    {% endfor %}
+
+    function closeLayer( obj ) {
+    $(obj).parent().parent().hide();
+    $('.icon_select').hide();
+    }
+
+    function viewInfo()
+    {
+        event.stopPropagation();
+        var idString= event.target.id;
+        var idNum = Number(idString.split('_')[1]);
+        $("#title_text").text(markersInfo[idNum]["title"]);
+        $("#info_text").text(markersInfo[idNum]["explain"]);
+        $('#inputLayer').hide();
+        $('#infoLayer').css({
+        "top": Number( markersInfo[idNum]["positionY"]) +46+"px",
+        "left":Number( markersInfo[idNum]["positionX"]) +46+"px",
+        "position": "absolute"
+        }).show();
+    }
+
+    function loadIcon()
+    {
+        {%  for marker in markers %}
+        $('#local_'+{{ loop.index0 }}).css({
+            "top":{% if marker.positionY == null%}  0 {% else %} {{ marker.positionY }} {% endif %}+"px",
+            "left":{% if marker.positionX == null %} 0 {% else %}{{ marker.positionX }} {% endif %}+"px",
+        }).show();
+        {% endfor %}
+    }
+    $(function(){
+
+        loadIcon();
+    });
+</script>
+
+{% endblock %}

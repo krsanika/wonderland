@@ -1,0 +1,11 @@
+{% extends 'universe_layout.html.twig' %}
+
+{% block stylesheets %}{{  parent() }}{% endblock %}
+{% block contents %}
+    {{ form_start(form) }}
+    {{ form_row(form.mapName) }}<br/>
+    {{ form_row(form.imageUrl) }}<br/>
+    {{ form_row(form.submit) }}<br/>
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascripts %}{{  parent() }}{% endblock %}

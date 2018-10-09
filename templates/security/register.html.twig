@@ -1,0 +1,14 @@
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+가입이다다다다다
+{{ form_start(form) }}
+    {{ form_row(form.username) }}
+    {{ form_row(form.plainPassword.first) }}
+    {{ form_row(form.plainPassword.second) }}
+    {{ form_row(form.termsAccepted) }}
+<button type="submit">가입 승인!</button>
+{{ form_end(form) }}
+
+{%  endblock %}

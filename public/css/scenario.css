@@ -1,0 +1,88 @@
+
+
+.carte{
+    border-bottom : gray 2px solid;
+    margin : 10px;
+    margin-bottom: 15px;
+    padding : 5px;
+    min-height : 260px;
+}
+
+.chapter{
+
+}
+
+
+.piecedText{
+
+}
+
+.title{
+    font-size : 20px;
+    font-style : oblique;
+}
+
+.author{
+    font-size : 15px;
+
+}
+
+.description{
+
+}
+
+.titleImg{
+    width : 250px;
+    height : 250px;
+    padding-right : 15px;
+    margin-right : 15px;
+    background-size : cover;
+}
+
+.scenarioContent{
+    min-height : 250px;
+    padding-left : 5px;
+    position: relative;
+    width : auto;
+}
+
+.categoryBox{
+    margin : 5px;
+    /*position : absolute;*/
+    right : 10px;
+    bottom : 10px;
+}
+
+.categoryIcon{
+    width : 100px;
+    height : 100px;
+    background-position: center;
+    background-size : contain;
+/*    display : table;*/
+}
+
+.memberInt{
+/*    display : table-cell;*/
+    font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-size : 70px;
+    position : relative;
+    right : -45px;
+    bottom : -20px;
+    text-align: right;
+/*    vertical-align: bottom;*/
+
+}
+
+.timeInt{
+    font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-size : 70px;
+    position : relative;
+    right : -45px;
+    top : -15px;
+    text-align: right;
+}
+
+.favoredBox{
+    position: absolute;
+    bottom : 0
+}

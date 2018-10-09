@@ -1,0 +1,10 @@
+{% extends 'default_layout.html.twig' %}
+
+{% block title %}WorldBox{% endblock %}
+
+{% block contents %}
+    <a href={{ url('world_index')}}>캠패인 룸으로</a>
+    <a href={{ url('world_about_play')}}>관련 플레이</a>
+    <a href={{ url('map_view')}}>지도 상세 보기</a>
+    <a href={{ url('timeline_view')}}>연표 상세 보기</a>
+{% endblock %}

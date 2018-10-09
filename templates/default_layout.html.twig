@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WorldBox{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('css/default.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+    <div id="content" class="content-box">
+        {#{% if (isApp == false) %}#}
+        <div id="header">
+            {% block header %}
+            {#    {% include "AppBundle::header.html.twig" %}#}
+            {% endblock %}
+        </div>
+        {% block contentBox %}
+        <div id="nav-box" class="nav float-left">
+            {% block nav %}
+                {% include "main_navigation.html.twig" %}
+            {% endblock %}
+        </div>
+        <div class="contents float-left">
+            {% block contents %}
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
+    {% block footer %}
+        <div class="footer center">
+            {% include "footer.html.twig" %}
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

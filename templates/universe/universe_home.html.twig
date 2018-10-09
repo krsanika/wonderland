@@ -1,0 +1,135 @@
+{% extends 'universe_layout.html.twig' %}
+{% block stylesheets %}{{  parent() }}
+
+    <link href="{{ asset('css/lightslider.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block contents %}
+    <div class="universe_title-text">유니버스</div>
+    {% if is_new %}
+        <a href="{{ url('local_new',{universe : id_universe}) }}">새로운 지도를 등록하세요!</a><br>
+    {% else %}
+        <div class="demo">
+            <div class ="item">
+                <ul id="content-slider" class="content-slider">
+                    {% for local in locals %}
+                        <li id="viewMap_{{ loop.index0 }}" class="map_item" style="background-image:url('{{  asset('uploads/images/' ~ local.imageUrl)}}'); ">
+                            <div id="icon_map_group">
+                                {% for marker in local.markers %}
+                                    <div id="local_{{loop.index0  }}" class="local_icon">
+                                        <div id="icon_{{ loop.index0 }}" class="icon_map" onClick="viewMapInfo()" ></div>
+                                        <div class="map_icon_title size14">{{ marker.positionTitle }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <a href={{ url('local_list',{universe : id_universe})}}>지도들 보러가기</a>
+        <!-- 폼 레이어  -->
+        <div id="infoLayer" class="popupLayer">
+            <div>
+                <span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+            </div>
+            <span> 지역명 : <span id="title_text" ></span></span><br/>
+            <span> 설명 : <span id="info_text" ></span></span><br/>
+            <!--  여긴 레이어~</br>       클릭하면 바로 나타나는 레이어에요^^-->
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{  parent() }}
+    <script type="text/javascript" src="{{ asset('js/lightslider.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/universeMap.js') }}"></script>
+    <script type="text/javascript">
+        var ratio;
+        var oWidth;
+        var oHeight;
+        var sWidth ;
+        var sHeight ;
+
+        $(document).ready(function() {
+            $("#content-slider").height(600);
+            $("#content-slider").lightSlider({
+                loop:true,
+                auto:true,
+                keyPress:true
+            });
+        });
+
+        getBackgroundImageSize($('.map_item'))
+                .then(function(size) {
+                    if(size.width>600)
+                    {
+                        if(size.width > size.height )
+                        {
+                            ratio = size.height/size.width;
+                            $(".map_item").width(600);
+                            $(".map_item").height(600*ratio);
+                            $('.map_item').css({"left": "-300px"});
+                        }
+                        else
+                        {
+                            ratio = size.width/size.height;
+                            $(".map_item").width(600*ratio);
+                            $(".map_item").height(600);
+                        }
+                    }
+                    else{
+                        $(".map_item").width( size.width);
+                        $(".map_item").height(size.height);
+                    }
+                    oWidth =size.width;
+                    oHeight = size.height;
+                    loadIcon();
+                })
+                .fail(function() {
+                    console.log('Could not get size because could not load image');
+                });
+
+        var markersInfo = [];
+        {% for local in locals %}
+        {% for marker in local.markers %}
+            markersInfo[{{loop.index0 }}] = {"title":"{{ marker.positionTitle}}",
+                "explain":"{% if marker.piecedTexts != null %}
+                {% for piecedText in  marker.piecedTexts %}{{ marker.piecedText.context }}{% endfor %}
+                {% else %} "공란"{% endif %}"
+                        ,"positionX":"{{ marker.positionX}}","positionY":"{{ marker.positionY }}" };
+        {% endfor %}
+        {% endfor %}
+        $(function ()
+        {
+        });
+        function loadIcon()
+        {
+            sWidth = $(".map_item").width();
+            sHeight = $(".map_item").height();
+
+            {% for local in locals %}
+            {% for marker in local.markers %}
+            $('#local_'+{{ loop.index0 }}).css({
+                "top":{% if marker.positionY == null%}  0 {% else %}
+                (({{ marker.positionY }}* sHeight )/oHeight)-ratio {% endif %}+"px",
+                "left":{% if marker.positionX == null %} 0 {% else %}
+        (({{ marker.positionX }}*sWidth)/oWidth)-ratio{% endif %}+"px",
+            }).show();
+            {% endfor %}
+            {% endfor %}
+        }
+        function viewMapInfo()
+        {
+            event.stopPropagation();
+            var idString= event.target.id;
+            var idNum = Number(idString.split('_')[1]);
+            $("#title_text").text(markersInfo[idNum]["title"]);
+            $("#info_text").text(markersInfo[idNum]["explain"]);
+            $('#infoLayer').css({
+                "top": ((Number( markersInfo[idNum]["positionY"])*sHeight)/oHeight)+"px",
+                "left":((Number( markersInfo[idNum]["positionX"])*sWidth)/oWidth)+"px",
+                "position": "absolute"
+            }).show();
+        }
+    </script>
+{% endblock %}

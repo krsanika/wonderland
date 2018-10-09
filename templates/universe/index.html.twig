@@ -1,0 +1,18 @@
+{% extends 'default_layout.html.twig' %}
+
+{% block contents %}
+    <!--
+    월드가 많이 생길 수 있으니, 검색해서 for문으로 반복해서 생성해준다.
+    startup support 참조
+    -->
+    {% for myUniverse in myUniverses %}
+        <div class="item_universe_home">
+            <a href={{ url('universe_home', {universe : myUniverse.idUniverse})}}>
+                <div class="item_universe_title_text size24 bold">
+                 {{ myUniverse.name}}
+                    </div>
+            </a>
+        </div>
+        <div class="line"></div>
+    {% endfor %}
+{% endblock %}

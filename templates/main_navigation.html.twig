@@ -1,0 +1,39 @@
+<nav>
+    <div id="navigation">
+            <!-- 웹일 경우 -->
+         {#   <div class="nav-font bold nav-margin white"><a href="#}{#{{url('all_page')}}#}{#">홈</a></div>
+            <div class="nav-font bold nav-margin white"><a href="#}{#{{url('popular_page')}}#}{#">캠패인</a></div>
+            <div class="nav-font bold nav-margin white"><a href="#}{#{{url('duedate_page')}}#}{#">캐릭터</a></div>
+            <div class="nav-font bold nav-margin white"><a href="#}{#{{url('duedate_page')}}#}{#">시나리오</a></div>#}
+        <table>
+            <tr>
+                <td>
+                    <div class="nav-font bold white"><a href="{{url('top')}}">홈</a></div>
+                </td>
+                <td>
+                    <div class="nav-font bold white"><a href="{{url('universe_index')}}">캠패인</a></div>
+                </td>
+                <td>
+                    <div class="nav-font bold white"><a href="{#{{url('duedate_page')}}#}">캐릭터</a></div>
+                </td>
+                <td>
+                    <div class="nav-font bold white"><a href="{{url('scenario_index')}}">시나리오</a></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="navAll" ></div>
+                </td>
+                <td>
+                    <div id="navPop" ></div>
+                </td>
+                <td>
+                    <div id="navDue"></div>
+                </td>
+            </tr>
+        </table>
+
+
+
+    </div>
+</nav>

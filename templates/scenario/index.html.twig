@@ -1,0 +1,71 @@
+
+{% extends 'default_layout.html.twig' %}
+{% block stylesheets %}
+ {{ parent() }}
+ <link href="{{ asset('css/scenario.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block contents %}
+    <div>
+        <h1>시나리오</h1> <
+    </div>
+    <div>
+    {% for scenario in allScenario %}
+        <div class="carte">
+            <a href="{{url('scenario_viewer', {id : scenario.idScenario}) }}">
+                <div class="titleImg float-left" style="background-image: url({{scenario.titleImgUrl }})">
+                </div>
+            </a>
+            <div class="scenarioContent float-left">
+                <span class="title"><a href="{{url('scenario_viewer', {id : scenario.idScenario}) }}">{{ scenario.name }}</a></span> <span class="author"> -by {{  scenario.idUser.username }}</span> |
+                 <span class="systemStr">{{  scenario.system |systemStr }}</span><br>
+                <b>
+                    {% for tag in scenario.tags %}
+                        [{{ tag | tagStr }}]
+                    {% endfor %}
+                </b>
+                <br>
+                {{ scenario.summary |nl2br }}
+                <div class="favoredBox">
+                    <img src="">
+                    <span>{{scenario.favoredCount }}</span>
+                    <img src="">
+                    <span>조회수 : {{ scenario.viewCount }}</span>
+                </div>
+
+                <div class="categoryBox">
+                    <div class="categoryIcon float-left" style="background-image: url({{asset('image/icon/icon_players.png')}})">
+                        <span class="memberInt">{{ scenario.minMember }}</span>
+                    </div>
+                    <div class="categoryIcon float-left" style="background-image: url({{asset('image/icon/icon_players.png')}})">
+                        <span class="memberInt">{{ scenario.maxMember }}</span>
+                    </div>
+                    {% if scenario.criteriaTime %}
+                        {% set criteria = "tr" %}
+                    {% else %}
+                        {% set criteria = "or" %}
+                    {% endif %}
+                    <div class="categoryIcon float-left" style="background-image: url({{asset('image/icon/icon_times_'~criteria~'.png')}})">
+                        <span class="timeInt">{{ scenario.maxMember }}</span>
+                    </div>
+                    {% if scenario.ero %}
+                    <div class="categoryIcon float-left" style="background-image: url({{asset('image/icon/icon_age_ero.png')}}) ">
+                    </div>
+                    {% endif %}
+                    {% if scenario.gro %}
+                        <div class="categoryIcon float-left" style="background-image: url({{asset('image/icon/icon_age_gro.png')}}) ">
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {%  endfor %}
+    </div>
+
+    <div class="line"></div>
+
+
+{% endblock %}

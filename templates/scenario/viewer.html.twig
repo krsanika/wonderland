@@ -1,0 +1,42 @@
+{% extends 'default_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/scenario.css') }}">
+{% endblock %}
+
+{% block contents %}
+
+<div>
+    <span class="title">{{ scenario.name }}</span> - by <span class="author">{{ scenario.idUser.username }}</span><br>
+
+    {% for chapter in scenario.chapter %}
+
+        {{ chapter.no }}
+        {{ chapter.chapterType }}
+        {{ chapter.chapterName }}
+        {{ chapter.context |nl2br}}
+        <div>
+        {% for prev in chapter.prevChapter %}
+            {{ prev }}
+        {% endfor %}
+        {{ chapter.no }}
+        {% for next in chapter.nextChapter %}
+            {{ next }}
+        {% endfor %}
+        </div>
+
+    {% endfor %}
+
+    {% for piece in scenario.piecedTexts %}
+        <img src="{{ piece.img_url }}">
+        {{ piece.idPieceText}}
+        {{ piece.keywordType }}
+        {{ piece.keyword }}
+        {{ piece.context |nl2br }}
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}

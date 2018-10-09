@@ -1,0 +1,185 @@
+{% extends 'world_layout.html.twig' %}
+
+{% block stylesheets %}
+{{  parent() }}
+    <link href="{{ asset('css/worldmap.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block contents %}
+<div>
+    {% if is_new %}
+        새로운 지도를 등록하세요!<br>
+        <form>
+            <input id="mapLink" type="url" name="map_link" >
+            <input type="submit" alt="불러오기">
+        </form>
+    {% else %}
+    <div id="editMap" class="map" style="background-image:url('{{ image_map }}'); ">
+        <div id="icon_map_group">
+
+        {%  for marker in markers %}
+            <div id="icon_{{ loop.index0 }}" class="icon_map" onClick="viewInfo()" style="left:;top:;"></div>
+        {% endfor %}
+        </div>
+        <div class="icon_select" style="background-image: url({{ asset('image/icon_select_circle.png') }})"> </div>
+    </div>
+        <!-- //클릭 이미지 -->
+
+        <!-- 폼 레이어  -->
+        <div id="infoLayer" class="popupLayer">
+            <div>
+             <span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+            </div>
+            <span> 지역명 : <span id="title_text" ></span></span><br/>
+            <span> 설명 : <span id="info_text" ></span></span><br/>
+            <span><input type="button" value="수정" /> </span>
+        <!--  여긴 레이어~</br>       클릭하면 바로 나타나는 레이어에요^^-->
+        </div>
+        <div id="inputLayer" class="popupLayer">
+            <div>
+                <span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+            </div>
+            <span> 지역명 : <input id="local_title" type="text" name="local_title"/></span><br/>
+            <span> 설명 : <input id="local_info" type="text" name="local_info"/></span><br/>
+            <span><input type="button" value="전송" onclick="saveData()"/> </span>
+            <!--  여긴 레이어~</br>       클릭하면 바로 나타나는 레이어에요^^-->
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        var getBackgroundImageSize = function(el) {
+            var imageUrl = $(el).css('background-image').match(/^url\(["']?(.+?)["']?\)$/);
+            var dfd = new $.Deferred();
+
+            if (imageUrl) {
+                var image = new Image();
+                image.onload = dfd.resolve;
+                image.onerror = dfd.reject;
+                image.src = imageUrl[1];
+            } else {
+                dfd.reject();
+            }
+
+            return dfd.then(function() {
+//                return { width: this.width, height: this.height };
+                return { width: this.naturalWidth, height: this.naturalHeight };
+            });
+        };
+        getBackgroundImageSize(jQuery('#editMap'))
+                .then(function(size) {
+                    $("#editMap").width( size.width);
+                    $("#editMap").height(size.height);
+//                    mapMarginTop = $("#content").height()- $("#nav-box").height();
+                })
+                .fail(function() {
+                    console.log('Could not get size because could not load image');
+                });
+
+         function closeLayer( obj ) {
+             $(obj).parent().parent().hide();
+             $('.icon_select').hide();
+         }
+        var selectIconLeft = null;
+        var selectIconTop = null;
+
+        var mapMarginTop = null;
+         $(function(){
+
+             /* 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+             $('#editMap').click(function(e)
+             {
+                 var sWidth = window.innerWidth;
+                 var sHeight = window.innerHeight;
+
+                 var oWidth = $('#inputLayer').width();
+                 var oHeight = $('#inputLayer').height();
+
+                 // 레이어가 나타날 위치를 셋팅한다.
+                 var divLeft = e.pageX + 46;
+                 var divTop = e.pageY + 46;
+
+
+                 selectIconLeft = e.pageX -46;
+                 selectIconTop = e.pageY -46;
+
+                 // 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+                 if( divLeft + oWidth > sWidth +  $(window).scrollLeft()) divLeft -= oWidth;
+                 if( divTop + oHeight > sHeight +  $(window).scrollTop() ) divTop -= (oHeight);
+
+                 // 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+                 if( divLeft < 0 ) divLeft = 0;
+                 if( divTop < 0 ) divTop = 0;
+                 $('#infoLayer').hide();
+                 $('#inputLayer').css({
+                     "top": divTop,
+                     "left": divLeft,
+                     "position": "absolute"
+                 }).show();
+
+                 $('.icon_select').css({
+                     "top": selectIconTop,
+                     "left": selectIconLeft,
+                     "position": "absolute"
+                 }).show();
+             });
+
+             loadIcon();
+         });
+
+
+        var markersInfo = [];
+        {% for marker in markers %}
+            markersInfo[{{loop.index0 }}] = {"title":"{{ marker.title}}","explain":"{{ marker.explain}}","positionX":"{{ marker.positionX}}","positionY":"{{ marker.positionY }}" };
+        {% endfor %}
+
+        function viewInfo()
+        {
+            event.stopPropagation();
+            var idString= event.target.id;
+            var idNum = Number(idString.split('_')[1]);
+            $("#title_text").text(markersInfo[idNum]["title"]);
+            $("#info_text").text(markersInfo[idNum]["explain"]);
+            $('#inputLayer').hide();
+            $('#infoLayer').css({
+                "top": Number( markersInfo[idNum]["positionY"]) +46+"px",
+                "left":Number( markersInfo[idNum]["positionX"]) +46+"px",
+                "position": "absolute"
+            }).show();
+        }
+        function saveData(  ) {
+            $("#local_title").val();
+            $("#local_info").val();
+            var data = {
+                "title" : $("#local_title").val(),
+                "info" : $("#local_info").val(),
+                "positionX" : selectIconLeft+46,
+                "positionY": selectIconTop+23 - $("#nav-box").height() - $("#header").height()
+            }
+            $.ajax({
+                type:'POST',
+                url:'{{ url('map_save') }}',
+                contentType: 'application/json',
+                dataType: "json",
+                data: JSON.stringify(data),
+                success:function(data){
+      //              $('#time').text(data);
+                    console.log(data);
+                    location.reload();
+                },
+                fail : function(err){
+                    console.log(err);
+                }
+            })
+        }
+        function loadIcon()
+        {
+            {%  for marker in markers %}
+                $('#icon_'+{{ loop.index0 }}).css({
+                "top":{% if marker.positionY == null%}  0 {% else %} {{ marker.positionY }} {% endif %}+"px",
+                "left":{% if marker.positionX == null %} 0 {% else %}{{ marker.positionX }} {% endif %}+"px",
+                 }).show();
+            {% endfor %}
+        }
+    </script>
+{% endblock %}

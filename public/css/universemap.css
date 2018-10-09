@@ -1,0 +1,17 @@
+.contents{
+    /*margin-top: 100px;*/
+    margin-left: 0%;
+    width: 100%;
+}
+
+.icon_select{
+    position : absolute;
+    display: none;
+    width: 93px;
+    height: 93px;
+    background-size : cover;
+    z-index: 10;
+}
+.icon_map{
+    position: absolute;
+}
